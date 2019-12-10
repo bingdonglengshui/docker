@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  chronos:
+    image: ubuntu:v2
+    container_name: linux-env
+    ports:       
+      -  "45678:22"
+    cap_add:
+      -  ALL
+    ulimits:
+             nproc: 65535
+             nofile: 
+                       soft: 20000
+                       hard:  20000  
+             core: -1

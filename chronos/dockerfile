@@ -1,0 +1,34 @@
+FROM ubuntu:14.04
+
+RUN apt-get update
+
+RUN apt-get install -y build-essential
+RUN apt-get install -y cmake
+RUN apt-get install -y gdb
+
+RUN apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+RUN sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+
+RUN apt-get install -y rsync
+
+RUN apt-get install -y libgflags-dev
+
+
+RUN apt-get install -y libevent-dev
+
+
+RUN sed -ri 's/RSYNC_ENABLE=false/RSYNC_ENABLE=true/g' /etc/default/rsync
+COPY rsync.conf /etc
+
+
+COPY  libsnappy.so.1 /usr/lib
+
+RUN echo 'root:123456' |chpasswd
+
+RUN mkdir /root/sync
+
+COPY ./entrypoint.sh /sbin
+RUN chmod +x /sbin/entrypoint.sh
+ENTRYPOINT [ "/sbin/entrypoint.sh" ]
